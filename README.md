@@ -1,64 +1,41 @@
-# Monitor de Internet
+# internet_monitor
 
-Dashboard em tempo real para monitoramento de conexão de internet, com detecção automática de quedas e registro histórico.
+A real-time dashboard that watches your internet connection, detects
+outages and keeps a history you can show to your ISP.
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue) ![Dash](https://img.shields.io/badge/Dash-Plotly-green) ![SQLite](https://img.shields.io/badge/SQLite-Database-lightgrey)
+![Python](https://img.shields.io/badge/Python-3.10+-blue) ![Dash](https://img.shields.io/badge/Dash-Plotly-green) ![SQLite](https://img.shields.io/badge/SQLite-local-lightgrey)
 
-## Funcionalidades
+## Features
 
-- **Monitoramento contínuo** via ping (Google DNS 8.8.8.8 + Cloudflare 1.1.1.1 como fallback)
-- **Dashboard web** com atualização automática a cada 5 segundos
-- **Gráfico de latência** com marcação visual de quedas
-- **Filtro por período** — última hora, 24h, semana, mês ou todos os dados
-- **Detecção inteligente de quedas** — agrupa falhas consecutivas e calcula duração
-- **Tabela detalhada** com as últimas 50 quedas registradas
-- **Armazenamento local** em SQLite para histórico persistente
+- Pings every second, with Google DNS (8.8.8.8) as the main target and
+  Cloudflare (1.1.1.1) as a fallback, so one slow host is not counted as an
+  outage.
+- Groups consecutive failures into a single outage with start, end and
+  duration.
+- Web dashboard that refreshes every 5 seconds: current latency, last outage,
+  outage count and a latency chart with failures marked.
+- Filters for the last hour, 24 hours, week, month or everything.
+- Table of the latest 50 outages.
+- History stored locally in SQLite (`internet_log.db`).
 
-## Requisitos
-
-- Python 3.10+
-- Dependências:
-
-```
-dash
-pandas
-plotly
-```
-
-## Instalação
+## Run
 
 ```bash
 git clone https://github.com/allanmedeiros71/internet_monitor.git
 cd internet_monitor
-python -m venv .venv
-source .venv/bin/activate
+python -m venv .venv && source .venv/bin/activate
 pip install dash pandas plotly
-```
-
-## Uso
-
-```bash
 python internet_monitor.py
 ```
 
-Acesse o dashboard em: **http://127.0.0.1:8050**
+Open <http://127.0.0.1:8050>.
 
-## Como funciona
+## How it works
 
-1. Uma thread em background executa pings a cada 1 segundo
-2. Se o alvo principal (8.8.8.8) falhar, testa o secundário (1.1.1.1) para confirmar a queda
-3. Os resultados são gravados em `internet_log.db` (SQLite)
-4. O dashboard Dash lê o banco e atualiza o gráfico e as métricas em tempo real
+A background thread pings the targets and writes each result to SQLite. The
+Dash app reads the database on every refresh and redraws the metrics, chart
+and outage table.
 
-## Screenshot
+## License
 
-O dashboard exibe:
-- **Status atual** — latência em ms ou OFFLINE
-- **Última queda** — timestamp da queda mais recente
-- **Total de quedas** — contagem no período selecionado
-- **Gráfico interativo** — histórico de latência com marcadores de falha
-- **Tabela de quedas** — início, fim, duração e tipo de cada evento
-
-## Licença
-
-Este projeto é de uso livre.
+Free to use.
